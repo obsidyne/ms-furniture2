@@ -1,0 +1,36 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=DM+Sans:wght@300;400;500&display=swap');
+
+/* ── Tailwind v4 theme tokens ────────────────────────────── */
+@theme {
+  --font-serif: 'Cormorant Garamond', Georgia, serif;
+  --font-sans:  'DM Sans', sans-serif;
+
+  --color-cream:       #f7f3ee;
+  --color-warm-white:  #fdfaf6;
+  --color-ink:         #1a1714;
+  --color-muted:       #8a7f76;
+  --color-accent:      #c4a882;
+  --color-accent-dark: #a8906a;
+  --color-border:      #e5ddd4;
+
+  --animate-shimmer: shimmer 1.4s infinite;
+
+  @keyframes shimmer {
+    0%   { background-position: -200% 0; }
+    100% { background-position:  200% 0; }
+  }
+}
+
+@layer base {
+  html { font-family: var(--font-sans); }
+  body { background-color: var(--color-warm-white); color: var(--color-ink); }
+}
+
+@layer utilities {
+  .shimmer {
+    background: linear-gradient(90deg, #f0ebe4 25%, #e8e0d6 50%, #f0ebe4 75%);
+    background-size: 200% 100%;
+    animation: var(--animate-shimmer);
+  }
+}
