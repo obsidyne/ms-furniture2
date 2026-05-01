@@ -295,7 +295,7 @@ export default function ProductForm({ product = null, onSaved }) {
                 <img
                   src={url.startsWith("/") ? `${API}${url}` : url}
                   alt={`Product image ${i + 1}`}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-contain p-2"
                 />
                 {/* Remove button */}
                 <button

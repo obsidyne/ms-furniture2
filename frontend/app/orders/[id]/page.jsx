@@ -133,7 +133,7 @@ function OrderDetail() {
                 <div key={item.id} className="flex items-center gap-4 py-3">
                   <div className="w-14 h-14 bg-cream rounded-sm overflow-hidden shrink-0">
                     {item.product?.images?.[0]
-                      ? <img src={imgSrc(item.product.images[0])} alt="" className="w-full h-full object-cover" />
+                      ? <img src={imgSrc(item.product.images[0])} alt="" className="w-full h-full object-contain p-1" />
                       : <div className="w-full h-full bg-border" />}
                   </div>
                   <div className="flex-1 min-w-0">

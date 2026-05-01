@@ -120,7 +120,7 @@ export default function ProductDetailPage() {
                 <img
                   src={imgSrc(product.images[imgIndex])}
                   alt={product.name}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-contain p-6"
                 />
               ) : (
                 <div className="w-full h-full bg-gradient-to-br from-cream to-border flex items-center justify-center">
@@ -155,7 +155,7 @@ export default function ProductDetailPage() {
                     className={`w-16 h-16 sm:w-20 sm:h-20 rounded-sm overflow-hidden border-2 transition-colors shrink-0
                       ${imgIndex === i ? "border-ink" : "border-border hover:border-muted"}`}
                   >
-                    <img src={imgSrc(img)} alt="" className="w-full h-full object-cover" />
+                    <img src={imgSrc(img)} alt="" className="w-full h-full object-contain p-1" />
                   </button>
                 ))}
               </div>

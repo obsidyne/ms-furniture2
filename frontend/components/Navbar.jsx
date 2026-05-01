@@ -38,7 +38,7 @@ export default function Navbar() {
 
           {/* ── Logo ──────────────────────────────────── */}
           <Link href="/" className="font-serif text-2xl font-light tracking-[0.3em] text-ink shrink-0">
-            MS Furniture
+            MS Furniture & Interiors
           </Link>
 
           {/* ── Desktop links ─────────────────────────── */}
@@ -170,7 +170,7 @@ export default function Navbar() {
 
             {/* Drawer header */}
             <div className="flex items-center justify-between px-5 py-4 border-b border-border">
-              <span className="font-serif text-xl tracking-[0.3em] text-ink">MS Furniture</span>
+              <span className="font-serif text-xl tracking-[0.3em] text-ink">MS Furniture & Interiors</span>
               <button onClick={() => setMobileOpen(false)} className="text-2xl text-muted leading-none">×</button>
             </div>
 

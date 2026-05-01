@@ -364,7 +364,7 @@ function CheckoutContent() {
                     <div key={item.id ?? item.productId} className="flex items-center gap-3">
                       <div className="w-12 h-12 bg-cream rounded overflow-hidden shrink-0">
                         {item.product?.images?.[0] ? (
-                          <img src={imgSrc(item.product.images[0])} alt="" className="w-full h-full object-cover" />
+                          <img src={imgSrc(item.product.images[0])} alt="" className="w-full h-full object-contain p-1" />
                         ) : (
                           <div className="w-full h-full bg-border" />
                         )}

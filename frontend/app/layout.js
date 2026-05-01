@@ -1,9 +1,10 @@
 import "./globals.css";
 import { AuthProvider } from "@/context/AuthContext";
 import { CartProvider }  from "@/context/cartContext";
+import Footer from "@/components/Footer";
 
 export const metadata = {
-  title: "MS Furniture",
+  title: "MS Furniture & Interiors",
   description: "Furniture crafted for the way you live.",
 };
 
@@ -14,6 +15,7 @@ export default function RootLayout({ children }) {
         <AuthProvider>
           <CartProvider>
             {children}
+            <Footer />
           </CartProvider>
         </AuthProvider>
       </body>
