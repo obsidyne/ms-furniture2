@@ -291,12 +291,12 @@ function CheckoutContent() {
             {step === 2 && (
               <div className="px-5 pb-5 flex flex-col gap-3">
                 {[
-                  {
-                    value: "FAKE",
-                    label: "Pay Online",
-                    desc:  "Credit / Debit Card, UPI, Netbanking",
-                    badge: "Simulated — no real payment",
-                  },
+                  // {
+                  //   value: "FAKE",
+                  //   label: "Pay Online",
+                  //   desc:  "Credit / Debit Card, UPI, Netbanking",
+                  //   badge: "Simulated — no real payment",
+                  // },
                   {
                     value: "COD",
                     label: "Cash on Delivery",
