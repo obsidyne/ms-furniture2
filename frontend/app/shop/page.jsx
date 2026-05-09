@@ -1,5 +1,6 @@
 "use client";
 
+import { Suspense } from "react";
 import { useEffect, useState, useCallback } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
@@ -15,7 +16,19 @@ const SORT_OPTIONS = [
   { value: "name_asc",   label: "Name: A → Z"       },
 ];
 
-export default function ShopPage() {
+export default function ShopPageWrapper() {
+  return (
+    <Suspense fallback={
+      <div className="max-w-7xl mx-auto px-4 py-10">
+        <div className="h-96 shimmer rounded-sm" />
+      </div>
+    }>
+      <ShopPage />
+    </Suspense>
+  );
+}
+
+function ShopPage() {
   const searchParams = useSearchParams();
   const router       = useRouter();
 
@@ -23,7 +36,7 @@ export default function ShopPage() {
   const [categories,  setCategories]  = useState([]);
   const [meta,        setMeta]        = useState({});
   const [loading,     setLoading]     = useState(true);
-  const [filterOpen,  setFilterOpen]  = useState(false); // mobile filter drawer
+  const [filterOpen,  setFilterOpen]  = useState(false);
 
   const currentCategory = searchParams.get("category") || "";
   const currentSort     = searchParams.get("sort")     || "newest";
@@ -60,7 +73,7 @@ export default function ShopPage() {
     if (value) p.set(key, value); else p.delete(key);
     p.delete("page");
     router.push(`/shop?${p.toString()}`);
-    setFilterOpen(false); // close mobile filter on selection
+    setFilterOpen(false);
   };
 
   const setPage = (pg) => {
@@ -87,7 +100,6 @@ export default function ShopPage() {
             <p className="text-sm text-muted mt-0.5">{meta.total ?? 0} products</p>
           </div>
 
-          {/* Mobile: filter + sort button */}
           <button
             onClick={() => setFilterOpen(true)}
             className="lg:hidden flex items-center gap-2 px-4 py-2 border border-border rounded-sm text-sm text-ink hover:border-ink transition-colors"
@@ -138,7 +150,7 @@ export default function ShopPage() {
           {/* ── Product grid ──────────────────────────────── */}
           <section className="flex-1 min-w-0">
 
-            {/* Desktop search bar */}
+            {/* Desktop search + sort */}
             <div className="hidden lg:flex items-center justify-between mb-6">
               <SearchBar value={currentSearch} onSearch={(v) => setParam("search", v)} />
               <SortSelect value={currentSort} onChange={(v) => setParam("sort", v)} />
@@ -215,8 +227,8 @@ export default function ShopPage() {
   );
 }
 
-// ── Filter panel — shared between sidebar and mobile drawer ───
-function FilterPanel({ categories, currentCategory, currentSort, currentSearch, setParam }) {
+// ── Filter panel ──────────────────────────────────────────────
+function FilterPanel({ categories, currentCategory, currentSort, setParam }) {
   const filterBtn = (active) =>
     `w-full flex items-center justify-between py-2 text-sm border-b border-border/60 transition-colors text-left
     ${active ? "text-ink font-medium" : "text-muted hover:text-ink"}`;
@@ -315,7 +327,6 @@ function ProductCard({ product }) {
       className="group flex flex-col bg-white border border-border rounded-sm overflow-hidden
         hover:-translate-y-0.5 hover:shadow-md transition-all duration-200"
     >
-      {/* Image */}
       <div className="relative aspect-square overflow-hidden bg-cream">
         {imgSrc ? (
           <img
@@ -331,14 +342,12 @@ function ProductCard({ product }) {
           </div>
         )}
 
-        {/* Discount badge */}
         {discount && (
           <span className="absolute top-2 left-2 bg-ink text-cream text-[0.62rem] font-medium tracking-wider px-2 py-0.5 rounded-sm">
             -{discount}%
           </span>
         )}
 
-        {/* Out of stock overlay */}
         {product.inventory?.quantity === 0 && (
           <div className="absolute inset-0 bg-white/60 flex items-center justify-center">
             <span className="text-[0.65rem] uppercase tracking-widest text-ink font-medium bg-white px-3 py-1 rounded-sm border border-border">
@@ -348,7 +357,6 @@ function ProductCard({ product }) {
         )}
       </div>
 
-      {/* Info */}
       <div className="p-3 sm:p-4 flex flex-col gap-1 flex-1">
         <p className="text-[0.62rem] font-medium tracking-[0.08em] uppercase text-muted">
           {product.category?.name}
@@ -357,7 +365,6 @@ function ProductCard({ product }) {
           {product.name}
         </h3>
 
-        {/* Price row */}
         <div className="flex items-center justify-between mt-auto pt-2">
           <div className="flex items-baseline gap-1.5 flex-wrap">
             <span className="text-sm font-medium text-ink">
