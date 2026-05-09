@@ -11,25 +11,25 @@ const imgSrc = (url) => url ? (url.startsWith("/") ? `${API}${url}` : url) : nul
 const ALL_STATUSES = ["PENDING", "CONFIRMED", "PROCESSING", "SHIPPED", "DELIVERED", "CANCELLED", "REFUNDED"];
 
 const STATUS_STYLE = {
-  PENDING: "bg-yellow-50 text-yellow-700 border-yellow-200",
-  CONFIRMED: "bg-blue-50 text-blue-700 border-blue-200",
+  PENDING:    "bg-yellow-50 text-yellow-700 border-yellow-200",
+  CONFIRMED:  "bg-blue-50 text-blue-700 border-blue-200",
   PROCESSING: "bg-purple-50 text-purple-700 border-purple-200",
-  SHIPPED: "bg-indigo-50 text-indigo-700 border-indigo-200",
-  DELIVERED: "bg-green-50 text-green-700 border-green-200",
-  CANCELLED: "bg-red-50 text-red-500 border-red-200",
-  REFUNDED: "bg-gray-50 text-gray-500 border-gray-200",
+  SHIPPED:    "bg-indigo-50 text-indigo-700 border-indigo-200",
+  DELIVERED:  "bg-green-50 text-green-700 border-green-200",
+  CANCELLED:  "bg-red-50 text-red-500 border-red-200",
+  REFUNDED:   "bg-gray-50 text-gray-500 border-gray-200",
 };
 
 export default function AdminOrdersPage() {
   const { user } = useAuth();
-  const [orders, setOrders] = useState([]);
-  const [total, setTotal] = useState(0);
-  const [pages, setPages] = useState(0);
+  const [orders,  setOrders]  = useState([]);
+  const [total,   setTotal]   = useState(0);
+  const [pages,   setPages]   = useState(0);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-  const [filter, setFilter] = useState("");
-  const [page, setPage] = useState(1);
-  const [search, setSearch] = useState("");
+  const [error,   setError]   = useState("");
+  const [filter,  setFilter]  = useState("");
+  const [page,    setPage]    = useState(1);
+  const [search,  setSearch]  = useState("");
   const [selected, setSelected] = useState(null);
 
   const fetchOrders = useCallback(async () => {
@@ -41,16 +41,12 @@ export default function AdminOrdersPage() {
       const params = new URLSearchParams({ page, limit: 20 });
       if (filter) params.set("status", filter);
       const res = await fetch(`${API}/api/admin/orders?${params}`, {
-        method: "GET",
         headers: {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${token}`,
         },
       });
-
-
       const data = await res.json();
-      console.log(data)
       if (!res.ok) throw new Error(data?.error ?? `Request failed: ${res.status}`);
       setOrders(Array.isArray(data) ? data : []);
       setTotal(data?.meta?.total ?? 0);
@@ -67,10 +63,10 @@ export default function AdminOrdersPage() {
 
   const visible = search.trim()
     ? orders.filter((o) =>
-      o?.id?.toLowerCase().includes(search.toLowerCase()) ||
-      o?.user?.name?.toLowerCase().includes(search.toLowerCase()) ||
-      o?.user?.email?.toLowerCase().includes(search.toLowerCase())
-    )
+        o?.id?.toLowerCase().includes(search.toLowerCase()) ||
+        o?.user?.name?.toLowerCase().includes(search.toLowerCase()) ||
+        o?.user?.email?.toLowerCase().includes(search.toLowerCase())
+      )
     : orders;
 
   return (
@@ -150,7 +146,7 @@ export default function AdminOrdersPage() {
                       <p className="font-medium text-ink text-sm truncate max-w-[140px]">{order.user?.name ?? "—"}</p>
                       <p className="text-xs text-muted truncate max-w-[140px]">{order.user?.email ?? "—"}</p>
                     </td>
-                    <td className="px-4 py-3 text-muted">{order._count?.items ?? 0}</td>
+                    <td className="px-4 py-3 text-muted">{order.items?.length ?? 0}</td>
                     <td className="px-4 py-3 font-medium text-ink">
                       ₹{Number(order.total ?? 0).toLocaleString("en-IN")}
                     </td>
@@ -224,13 +220,19 @@ export default function AdminOrdersPage() {
   );
 }
 
+// ─────────────────────────────────────────────────────────────
+// Order Detail Modal
+// ─────────────────────────────────────────────────────────────
 function OrderDetailModal({ orderId, onClose, onStatusChange }) {
-  const [order, setOrder] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [status, setStatus] = useState("");
-  const [saving, setSaving] = useState(false);
-  const [saved, setSaved] = useState(false);
-  const [error, setError] = useState("");
+  const [order,     setOrder]     = useState(null);
+  const [loading,   setLoading]   = useState(true);
+  const [status,    setStatus]    = useState("");
+  const [saving,    setSaving]    = useState(false);
+  const [saved,     setSaved]     = useState(false);
+  const [error,     setError]     = useState("");
+  const [note,      setNote]      = useState("");
+  const [savingNote, setSavingNote] = useState(false);
+  const [savedNote,  setSavedNote]  = useState(false);
 
   useEffect(() => {
     setLoading(true);
@@ -238,7 +240,6 @@ function OrderDetailModal({ orderId, onClose, onStatusChange }) {
       try {
         const token = await auth.currentUser.getIdToken();
         const res = await fetch(`${API}/api/admin/orders/${orderId}`, {
-          method: "GET",
           headers: {
             "Content-Type": "application/json",
             "Authorization": `Bearer ${token}`,
@@ -248,6 +249,7 @@ function OrderDetailModal({ orderId, onClose, onStatusChange }) {
         if (!res.ok) throw new Error(data?.error ?? `Request failed: ${res.status}`);
         setOrder(data);
         setStatus(data.status ?? "PENDING");
+        setNote(data.adminNote ?? "");
       } catch (err) {
         setError(err.message ?? "Failed to load order");
       } finally {
@@ -264,10 +266,7 @@ function OrderDetailModal({ orderId, onClose, onStatusChange }) {
       const token = await auth.currentUser.getIdToken();
       const res = await fetch(`${API}/api/admin/orders/${orderId}/status`, {
         method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,
-        },
+        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
         body: JSON.stringify({ status }),
       });
       const data = await res.json();
@@ -283,37 +282,50 @@ function OrderDetailModal({ orderId, onClose, onStatusChange }) {
     }
   };
 
+  const updateNote = async () => {
+    setSavingNote(true);
+    setError("");
+    try {
+      const token = await auth.currentUser.getIdToken();
+      const res = await fetch(`${API}/api/admin/orders/${orderId}/note`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
+        body: JSON.stringify({ adminNote: note }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data?.error ?? `Request failed: ${res.status}`);
+      setOrder((o) => ({ ...o, adminNote: note }));
+      setSavedNote(true);
+      setTimeout(() => setSavedNote(false), 2000);
+    } catch (err) {
+      setError(err.message ?? "Failed to save note");
+    } finally {
+      setSavingNote(false);
+    }
+  };
 
-const confirmCODPayment = async () => {
-  setSaving(true);
-  setError("");
-  try {
-    const token = await auth.currentUser.getIdToken();
-    const res = await fetch(`${API}/api/admin/orders/${orderId}/payment`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`,
-      },
-      body: JSON.stringify({ status: "PAID" }),
-    });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data?.error ?? `Request failed: ${res.status}`);
-    setOrder((o) => ({
-      ...o,
-      status: "DELIVERED",
-      payment: { ...o.payment, status: "PAID" },
-    }));
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2000);
-    onStatusChange();
-  } catch (err) {
-    setError(err.message ?? "Failed to confirm payment");
-  } finally {
-    setSaving(false);
-  }
-};
-  
+  const confirmCODPayment = async () => {
+    setSaving(true);
+    setError("");
+    try {
+      const token = await auth.currentUser.getIdToken();
+      const res = await fetch(`${API}/api/admin/orders/${orderId}/payment`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
+        body: JSON.stringify({ status: "PAID" }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data?.error ?? `Request failed: ${res.status}`);
+      setOrder((o) => ({ ...o, status: "DELIVERED", payment: { ...o.payment, status: "PAID" } }));
+      setSaved(true);
+      setTimeout(() => setSaved(false), 2000);
+      onStatusChange();
+    } catch (err) {
+      setError(err.message ?? "Failed to confirm payment");
+    } finally {
+      setSaving(false);
+    }
+  };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
@@ -331,13 +343,14 @@ const confirmCODPayment = async () => {
             <div className="flex flex-col gap-4">
               {[1, 2, 3].map((i) => <div key={i} className="h-16 rounded shimmer" />)}
             </div>
-          ) : error ? (
+          ) : error && !order ? (
             <p className="text-sm text-red-500">{error}</p>
           ) : !order ? (
             <p className="text-sm text-muted">Order not found.</p>
           ) : (
             <div className="flex flex-col gap-6">
 
+              {/* Customer + date */}
               <div className="grid grid-cols-2 gap-4">
                 <div className="bg-cream rounded-sm p-4">
                   <p className="text-[0.68rem] uppercase tracking-wider text-muted font-medium mb-1">Customer</p>
@@ -359,19 +372,15 @@ const confirmCODPayment = async () => {
                     </span>
                   </p>
                   <p className="text-xs text-muted mt-1">
-                    Payment Method: {" "}
-                    {/* <span className={order.payment?.status === "PAID" ? "text-green-700" : "text-yellow-600"}>
-                      {order.payment?.status ?? "—"}
-                    </span> */}
+                    Method:{" "}
                     {order.payment?.method && (
-                      <span className="ml-2 text-yellow-600">· {order.payment.method}</span>
+                      <span className="text-yellow-600">{order.payment.method}</span>
                     )}
                   </p>
                 </div>
               </div>
 
-
-
+              {/* Items */}
               <div>
                 <p className="text-[0.68rem] uppercase tracking-wider text-muted font-medium mb-3">Items</p>
                 <div className="flex flex-col gap-2">
@@ -396,15 +405,18 @@ const confirmCODPayment = async () => {
                 </div>
               </div>
 
+              {/* COD confirm */}
               {order.payment?.method === "COD" && order.payment?.status !== "PAID" && (
                 <button
                   onClick={confirmCODPayment}
-                  className="px-5 py-2.5 text-xs font-medium uppercase tracking-wider rounded-sm bg-green-700 text-white hover:bg-green-800 transition-colors"
+                  disabled={saving}
+                  className="px-5 py-2.5 text-xs font-medium uppercase tracking-wider rounded-sm bg-green-700 text-white hover:bg-green-800 transition-colors disabled:opacity-50"
                 >
                   Mark Cash Collected
                 </button>
               )}
 
+              {/* Price breakdown */}
               <div className="border border-border rounded-sm p-4">
                 <p className="text-[0.68rem] uppercase tracking-wider text-muted font-medium mb-3">Price Breakdown</p>
                 <div className="flex flex-col gap-2 text-sm">
@@ -430,6 +442,7 @@ const confirmCODPayment = async () => {
                 </div>
               </div>
 
+              {/* Delivery address */}
               {order.address && (
                 <div>
                   <p className="text-[0.68rem] uppercase tracking-wider text-muted font-medium mb-2">Delivery Address</p>
@@ -441,6 +454,7 @@ const confirmCODPayment = async () => {
                 </div>
               )}
 
+              {/* Update status */}
               <div>
                 <p className="text-[0.68rem] uppercase tracking-wider text-muted font-medium mb-2">Update Status</p>
                 <div className="flex items-center gap-3">
@@ -464,6 +478,35 @@ const confirmCODPayment = async () => {
                   </button>
                 </div>
                 {error && <p className="text-sm text-red-500 mt-2">{error}</p>}
+              </div>
+
+              {/* Message to customer */}
+              <div>
+                <p className="text-[0.68rem] uppercase tracking-wider text-muted font-medium mb-2">
+                  Message to Customer
+                </p>
+                <textarea
+                  value={note}
+                  onChange={(e) => setNote(e.target.value)}
+                  rows={3}
+                  placeholder="e.g. Your order has been dispatched via BlueDart. Tracking ID: BD1234567890"
+                  className="w-full px-3 py-2.5 border border-border rounded-sm text-sm text-ink bg-white
+                    outline-none focus:border-accent resize-none transition-colors placeholder:text-muted/40"
+                />
+                <div className="flex items-center justify-between mt-2">
+                  <p className="text-xs text-muted">
+                    Visible to the customer on their order page.
+                  </p>
+                  <button
+                    onClick={updateNote}
+                    disabled={savingNote || note === (order.adminNote ?? "")}
+                    className={`px-4 py-2 text-xs font-medium uppercase tracking-wider rounded-sm transition-colors
+                      disabled:opacity-50 disabled:cursor-not-allowed shrink-0
+                      ${savedNote ? "bg-green-700 text-white" : "bg-ink text-cream hover:bg-[#2d2926]"}`}
+                  >
+                    {savedNote ? "✓ Saved" : savingNote ? "Saving…" : "Save Note"}
+                  </button>
+                </div>
               </div>
 
             </div>

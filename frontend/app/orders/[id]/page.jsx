@@ -48,11 +48,9 @@ function OrderDetail() {
   }, [id]);
 
   if (loading) return (
-    <>
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 py-10 flex flex-col gap-5">
-        {[1,2,3].map((i) => <div key={i} className="h-32 rounded-sm shimmer" />)}
-      </div>
-    </>
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 py-10 flex flex-col gap-5">
+      {[1, 2, 3].map((i) => <div key={i} className="h-32 rounded-sm shimmer" />)}
+    </div>
   );
 
   if (error) return (
@@ -156,7 +154,7 @@ function OrderDetail() {
         {/* Right column */}
         <div className="flex flex-col gap-4">
 
-          {/* Price breakdown */}
+          {/* Payment */}
           <div className="bg-white border border-border rounded-sm p-5">
             <h2 className="text-xs font-medium tracking-[0.1em] uppercase text-muted mb-4">Payment</h2>
             <div className="flex flex-col gap-2 text-sm">
@@ -191,6 +189,18 @@ function OrderDetail() {
               </div>
             </div>
           </div>
+
+          {/* Admin message — only shown when present */}
+          {order.adminNote && (
+            <div className="bg-white border border-border rounded-sm p-5">
+              <h2 className="text-xs font-medium tracking-[0.1em] uppercase text-muted mb-2">
+                Message from ARVO
+              </h2>
+              <p className="text-sm text-ink leading-relaxed whitespace-pre-wrap">
+                {order.adminNote}
+              </p>
+            </div>
+          )}
 
           {/* Delivery address */}
           {order.address && (

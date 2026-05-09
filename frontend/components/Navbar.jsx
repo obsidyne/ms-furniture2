@@ -7,8 +7,8 @@ import { useCart } from "@/context/cartContext";
 import { api } from "@/lib/api";
 
 export default function Navbar() {
-  const { user, logout }            = useAuth();
-  const { itemCount }               = useCart();
+  const { user, logout }              = useAuth();
+  const { itemCount }                 = useCart();
   const [categories,  setCategories]  = useState([]);
   const [userMenu,    setUserMenu]    = useState(false);
   const [mobileOpen,  setMobileOpen]  = useState(false);
@@ -20,7 +20,7 @@ export default function Navbar() {
       .catch(() => {});
   }, []);
 
-  // Close user menu when clicking outside
+  // Close user menu on outside click
   useEffect(() => {
     const handler = (e) => {
       if (userMenuRef.current && !userMenuRef.current.contains(e.target)) {
@@ -31,26 +31,38 @@ export default function Navbar() {
     return () => document.removeEventListener("mousedown", handler);
   }, []);
 
+  // Lock body scroll when mobile drawer is open
+  useEffect(() => {
+    document.body.style.overflow = mobileOpen ? "hidden" : "";
+    return () => { document.body.style.overflow = ""; };
+  }, [mobileOpen]);
+
   return (
     <>
       <header className="sticky top-0 z-50 bg-warm-white/95 backdrop-blur-md border-b border-border">
         <nav className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
 
           {/* ── Logo ──────────────────────────────────── */}
-          <Link href="/" className="font-serif text-2xl font-light tracking-[0.3em] text-ink shrink-0">
+          <Link
+            href="/"
+            className="font-serif text-xl sm:text-2xl font-light tracking-[0.2em] sm:tracking-[0.3em] text-ink shrink-0"
+          >
             MS Furniture
           </Link>
 
-          {/* ── Desktop links ─────────────────────────── */}
-          <div className="hidden md:flex items-center gap-8">
-            <Link href="/shop" className="nav-link text-[0.78rem] font-medium tracking-[0.08em] uppercase text-muted hover:text-ink transition-colors">
+          {/* ── Desktop links (lg+) ───────────────────── */}
+          <div className="hidden lg:flex items-center gap-6 xl:gap-8 overflow-hidden">
+            <Link
+              href="/shop"
+              className="text-[0.78rem] font-medium tracking-[0.08em] uppercase text-muted hover:text-ink transition-colors whitespace-nowrap"
+            >
               Shop
             </Link>
             {categories.map((cat) => (
               <Link
                 key={cat.id}
                 href={`/shop?category=${cat.slug}`}
-                className="text-[0.78rem] font-medium tracking-[0.08em] uppercase text-muted hover:text-ink transition-colors"
+                className="text-[0.78rem] font-medium tracking-[0.08em] uppercase text-muted hover:text-ink transition-colors whitespace-nowrap"
               >
                 {cat.name}
               </Link>
@@ -58,27 +70,27 @@ export default function Navbar() {
           </div>
 
           {/* ── Right actions ─────────────────────────── */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3 sm:gap-4">
 
             {/* Cart */}
-            <Link href="/cart" className="relative text-ink hover:text-muted transition-colors">
+            <Link href="/cart" className="relative text-ink hover:text-muted transition-colors p-1">
               <CartIcon />
               {itemCount > 0 && (
-                <span className="absolute -top-1.5 -right-2 bg-ink text-cream text-[0.58rem] font-medium w-4 h-4 rounded-full flex items-center justify-center">
+                <span className="absolute -top-0.5 -right-1.5 bg-ink text-cream text-[0.58rem] font-medium w-4 h-4 rounded-full flex items-center justify-center leading-none">
                   {itemCount > 9 ? "9+" : itemCount}
                 </span>
               )}
             </Link>
 
-            {/* ── User menu (desktop) ─────────────────── */}
+            {/* ── User menu (desktop lg+) ─────────────── */}
             {user ? (
-              <div className="relative hidden md:block" ref={userMenuRef}>
-                {/* Avatar button */}
+              <div className="relative hidden lg:block" ref={userMenuRef}>
                 <button
                   onClick={() => setUserMenu((v) => !v)}
                   className="flex items-center gap-2 group"
+                  aria-label="User menu"
+                  aria-expanded={userMenu}
                 >
-                  {/* Avatar */}
                   {user.avatarUrl ? (
                     <img
                       src={user.avatarUrl}
@@ -90,20 +102,16 @@ export default function Navbar() {
                       {user.name?.[0]?.toUpperCase()}
                     </span>
                   )}
-                  {/* Chevron */}
                   <ChevronIcon open={userMenu} />
                 </button>
 
-                {/* Dropdown */}
                 {userMenu && (
                   <div className="absolute right-0 top-[calc(100%+8px)] w-56 bg-white border border-border rounded-sm shadow-lg overflow-hidden z-50">
-                    {/* User info header */}
                     <div className="px-4 py-3 border-b border-border bg-cream">
                       <p className="text-sm font-medium text-ink truncate">{user.name}</p>
                       <p className="text-xs text-muted truncate">{user.email}</p>
                     </div>
 
-                    {/* Menu items */}
                     <div className="py-1">
                       {[
                         { label: "My Orders", href: "/orders",  icon: "📦" },
@@ -124,7 +132,6 @@ export default function Navbar() {
                       ))}
                     </div>
 
-                    {/* Sign out */}
                     <div className="border-t border-border py-1">
                       <button
                         onClick={() => { logout(); setUserMenu(false); }}
@@ -138,22 +145,22 @@ export default function Navbar() {
                 )}
               </div>
             ) : (
-              /* Sign in button — desktop */
+              /* Sign in — desktop lg+ */
               <Link
                 href="/auth"
-                className="hidden md:flex items-center gap-2 px-4 py-2 border border-border rounded-sm
+                className="hidden lg:flex items-center gap-2 px-4 py-2 border border-border rounded-sm
                   text-[0.78rem] font-medium tracking-[0.08em] uppercase text-ink
-                  hover:bg-ink hover:text-cream hover:border-ink transition-all"
+                  hover:bg-ink hover:text-cream hover:border-ink transition-all whitespace-nowrap"
               >
                 <UserIcon />
                 Sign In
               </Link>
             )}
 
-            {/* Hamburger — mobile */}
+            {/* Hamburger — shown below lg */}
             <button
               onClick={() => setMobileOpen(true)}
-              className="md:hidden p-1"
+              className="lg:hidden p-1 text-ink hover:text-muted transition-colors"
               aria-label="Open menu"
             >
               <HamburgerIcon />
@@ -162,20 +169,34 @@ export default function Navbar() {
         </nav>
       </header>
 
-      {/* ── Mobile drawer ───────────────────────────────── */}
+      {/* ── Mobile / Tablet drawer ──────────────────────── */}
       {mobileOpen && (
         <>
-          <div className="fixed inset-0 z-50 bg-black/40" onClick={() => setMobileOpen(false)} />
-          <div className="fixed top-0 right-0 z-50 h-full w-72 bg-white flex flex-col shadow-2xl">
+          {/* Backdrop */}
+          <div
+            className="fixed inset-0 z-50 bg-black/40 backdrop-blur-[2px] transition-opacity"
+            onClick={() => setMobileOpen(false)}
+          />
+
+          {/* Drawer panel */}
+          <div className="fixed top-0 right-0 z-50 h-full w-[min(20rem,90vw)] bg-white flex flex-col shadow-2xl">
 
             {/* Drawer header */}
-            <div className="flex items-center justify-between px-5 py-4 border-b border-border">
-              <span className="font-serif text-xl tracking-[0.3em] text-ink">MS Furniture</span>
-              <button onClick={() => setMobileOpen(false)} className="text-2xl text-muted leading-none">×</button>
+            <div className="flex items-center justify-between px-5 py-4 border-b border-border shrink-0">
+              <span className="font-serif text-xl tracking-[0.25em] text-ink">MS Furniture</span>
+              <button
+                onClick={() => setMobileOpen(false)}
+                className="w-8 h-8 flex items-center justify-center rounded-sm text-muted hover:text-ink hover:bg-cream transition-colors"
+                aria-label="Close menu"
+              >
+                <CloseIcon />
+              </button>
             </div>
 
-            {/* Drawer body */}
+            {/* Drawer body — scrollable */}
             <div className="flex-1 overflow-y-auto">
+
+              {/* Shop links */}
               <div className="px-5 py-4">
                 <p className="text-[0.62rem] uppercase tracking-widest text-muted mb-3">Shop</p>
                 <MobileLink href="/shop" onClick={() => setMobileOpen(false)}>All Products</MobileLink>
@@ -186,26 +207,31 @@ export default function Navbar() {
                 ))}
               </div>
 
+              {/* Account links — only when logged in */}
               {user && (
                 <div className="px-5 py-4 border-t border-border">
                   <p className="text-[0.62rem] uppercase tracking-widest text-muted mb-3">Account</p>
-                  <MobileLink href="/orders"  onClick={() => setMobileOpen(false)}>My Orders</MobileLink>
-                  <MobileLink href="/profile" onClick={() => setMobileOpen(false)}>Profile</MobileLink>
+                  <MobileLink href="/orders"  onClick={() => setMobileOpen(false)}>📦&nbsp;&nbsp;My Orders</MobileLink>
+                  <MobileLink href="/profile" onClick={() => setMobileOpen(false)}>👤&nbsp;&nbsp;Profile</MobileLink>
                   {user.role === "ADMIN" && (
-                    <MobileLink href="/admin" onClick={() => setMobileOpen(false)}>Admin Panel</MobileLink>
+                    <MobileLink href="/admin" onClick={() => setMobileOpen(false)}>⚙️&nbsp;&nbsp;Admin Panel</MobileLink>
                   )}
                 </div>
               )}
             </div>
 
             {/* Drawer footer */}
-            <div className="px-5 py-4 border-t border-border">
+            <div className="px-5 py-4 border-t border-border shrink-0">
               {user ? (
                 <div className="flex items-center gap-3">
                   {user.avatarUrl ? (
-                    <img src={user.avatarUrl} alt="" className="w-9 h-9 rounded-full object-cover border border-border" />
+                    <img
+                      src={user.avatarUrl}
+                      alt=""
+                      className="w-9 h-9 rounded-full object-cover border border-border shrink-0"
+                    />
                   ) : (
-                    <span className="w-9 h-9 rounded-full bg-ink text-cream font-serif flex items-center justify-center">
+                    <span className="w-9 h-9 rounded-full bg-ink text-cream font-serif flex items-center justify-center shrink-0">
                       {user.name?.[0]?.toUpperCase()}
                     </span>
                   )}
@@ -215,7 +241,7 @@ export default function Navbar() {
                   </div>
                   <button
                     onClick={() => { logout(); setMobileOpen(false); }}
-                    className="text-xs text-red-400 hover:text-red-600 shrink-0 transition-colors"
+                    className="text-xs text-red-400 hover:text-red-600 shrink-0 transition-colors py-1"
                   >
                     Sign out
                   </button>
@@ -224,8 +250,9 @@ export default function Navbar() {
                 <Link
                   href="/auth"
                   onClick={() => setMobileOpen(false)}
-                  className="block w-full text-center py-2.5 bg-ink text-cream text-xs uppercase tracking-widest rounded-sm hover:bg-[#2d2926] transition-colors"
+                  className="flex items-center justify-center gap-2 w-full py-2.5 bg-ink text-cream text-xs uppercase tracking-widest rounded-sm hover:bg-[#2d2926] transition-colors"
                 >
+                  <UserIcon />
                   Sign In
                 </Link>
               )}
@@ -237,12 +264,14 @@ export default function Navbar() {
   );
 }
 
+/* ── Sub-components ─────────────────────────────────── */
+
 function MobileLink({ href, onClick, children }) {
   return (
     <Link
       href={href}
       onClick={onClick}
-      className="flex items-center py-2.5 text-sm text-ink hover:text-muted border-b border-border/50 transition-colors"
+      className="flex items-center py-2.5 text-sm text-ink hover:text-muted border-b border-border/50 last:border-b-0 transition-colors"
     >
       {children}
     </Link>
@@ -285,6 +314,15 @@ function HamburgerIcon() {
       <line x1="3" y1="6" x2="21" y2="6"/>
       <line x1="3" y1="12" x2="21" y2="12"/>
       <line x1="3" y1="18" x2="21" y2="18"/>
+    </svg>
+  );
+}
+
+function CloseIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+      <line x1="18" y1="6" x2="6" y2="18"/>
+      <line x1="6" y1="6" x2="18" y2="18"/>
     </svg>
   );
 }

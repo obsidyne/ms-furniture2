@@ -196,6 +196,7 @@ model Order {
   notes           String?
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
+  adminNote       String?
 
   user     User        @relation(fields: [userId], references: [id])
   address  Address     @relation(fields: [addressId], references: [id])
@@ -214,6 +215,7 @@ model OrderItem {
   productId String
   quantity  Int
   price     Decimal @db.Decimal(10, 2)   // price at the time of order
+  adminNote  String?
 
   order   Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
   product Product @relation(fields: [productId], references: [id])
