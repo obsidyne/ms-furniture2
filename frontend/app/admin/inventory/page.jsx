@@ -227,7 +227,7 @@ export default function AdminInventoryPage() {
                         <div className="flex items-center gap-3">
                           <div className="w-10 h-10 bg-cream rounded overflow-hidden shrink-0">
                             {imgSrc ? (
-                              <img src={imgSrc} alt="" className="w-full h-full object-cover" />
+                              <img src={imgSrc} alt="" className="w-full h-full object-contain p-1" />
                             ) : (
                               <div className="w-full h-full bg-border" />
                             )}

@@ -152,6 +152,26 @@ export default function HomePage() {
                 href={`/shop?category=${cat.slug}`}
                 className="group relative overflow-hidden rounded-sm aspect-square bg-[#f5f0e8] flex items-end p-5"
               >
+                {/* Category image */}
+                {cat.imageUrl ? (
+                  <img
+                    src={imgSrc(cat.imageUrl)}
+                    alt={cat.name}
+                    className="absolute inset-0 w-full h-full object-contain p-4 group-hover:scale-105 transition-transform duration-500"
+                  />
+                ) : (
+                  <div
+                    className="absolute inset-0"
+                    style={{
+                      background: [
+                        "linear-gradient(135deg, #e8ddd0 0%, #d4c4b0 100%)",
+                        "linear-gradient(135deg, #d4c8b8 0%, #c4b49a 100%)",
+                        "linear-gradient(135deg, #ddd4c4 0%, #ccc0a8 100%)",
+                        "linear-gradient(135deg, #e4d8c8 0%, #d0c0a4 100%)",
+                      ][i % 4],
+                    }}
+                  />
+                )}
                 <div className="absolute inset-0 bg-gradient-to-t from-ink/60 via-ink/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-400" />
                 <div className="relative z-10">
                   <p className="font-serif text-white text-lg font-light opacity-0 group-hover:opacity-100 transition-opacity duration-300 -translate-y-1 group-hover:translate-y-0 transform">
@@ -161,18 +181,6 @@ export default function HomePage() {
                     {cat.name}
                   </p>
                 </div>
-                {/* Placeholder gradient when no image */}
-                <div
-                  className="absolute inset-0 -z-10"
-                  style={{
-                    background: [
-                      "linear-gradient(135deg, #e8ddd0 0%, #d4c4b0 100%)",
-                      "linear-gradient(135deg, #d4c8b8 0%, #c4b49a 100%)",
-                      "linear-gradient(135deg, #ddd4c4 0%, #ccc0a8 100%)",
-                      "linear-gradient(135deg, #e4d8c8 0%, #d0c0a4 100%)",
-                    ][i % 4],
-                  }}
-                />
               </Link>
             ))}
           </div>
@@ -353,17 +361,17 @@ export default function HomePage() {
                   {
                     icon: <MapPin />,
                     title: "Showroom",
-                    lines: ["12 Craft Lane, MG Road", "Thiruvananthapuram, Kerala 695001"],
+                    lines: ["VHPH+RQ9, Curzon Rd", "Kallupalam, Thangassery, Kollam, Kerala 691013"],
                   },
                   {
                     icon: <Phone />,
                     title: "Phone",
-                    lines: ["+91 98470 12345", "Mon – Sat, 10am – 7pm"],
+                    lines: ["+91 99953 22809", "Mon – Sat, 10am – 7pm"],
                   },
                   {
                     icon: <Mail />,
                     title: "Email",
-                    lines: ["hello@yourfurniture.in", "We reply within 24 hours"],
+                    lines: ["hello@msfurniture.in", "We reply within 24 hours"],
                   },
                 ].map((c) => (
                   <div key={c.title} className="flex gap-4">
@@ -388,70 +396,6 @@ export default function HomePage() {
           </div>
         </div>
       </section>
-
-      {/* ── Footer ───────────────────────────────────────────── */}
-      <footer className="bg-ink text-white/60">
-        <div className="max-w-7xl mx-auto px-6 sm:px-10 py-12">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-10">
-            <div className="col-span-2 md:col-span-1">
-              <p className="font-serif text-xl text-white mb-3">MS Furniture</p>
-              <p className="text-sm leading-relaxed text-white/40 max-w-[200px]">
-                Crafting furniture that becomes part of your story.
-              </p>
-            </div>
-            {[
-              {
-                title: "Shop",
-                links: [
-                  { label: "All Products", href: "/shop" },
-                  { label: "New Arrivals", href: "/shop?sort=newest" },
-                  { label: "Best Sellers", href: "/shop" },
-                ],
-              },
-              {
-                title: "Company",
-                links: [
-                  { label: "About Us",    href: "#about"   },
-                  { label: "Contact",     href: "#contact" },
-                  { label: "Careers",     href: "#"        },
-                ],
-              },
-              {
-                title: "Support",
-                links: [
-                  { label: "Shipping",    href: "#" },
-                  { label: "Returns",     href: "#" },
-                  { label: "Care Guide",  href: "#" },
-                ],
-              },
-            ].map((col) => (
-              <div key={col.title}>
-                <p className="text-[0.65rem] font-medium tracking-[0.15em] uppercase text-white mb-4">
-                  {col.title}
-                </p>
-                <ul className="flex flex-col gap-2.5">
-                  {col.links.map((l) => (
-                    <li key={l.label}>
-                      <Link href={l.href} className="text-sm text-white/40 hover:text-white transition-colors">
-                        {l.label}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </div>
-
-          <div className="border-t border-white/10 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <p className="text-xs text-white/30">
-              © {new Date().getFullYear()} Artisana. All rights reserved.
-            </p>
-            <p className="text-xs text-white/30">
-              Handcrafted in Kerala, India 🇮🇳
-            </p>
-          </div>
-        </div>
-      </footer>
 
       <style jsx global>{`
         @keyframes fadeUp {
@@ -485,7 +429,7 @@ function ProductCard({ product }) {
           <img
             src={src}
             alt={product.name}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+            className="w-full h-full object-contain p-4 group-hover:scale-105 transition-transform duration-300"
           />
         ) : (
           <div className="w-full h-full bg-gradient-to-br from-cream to-border flex items-center justify-center">

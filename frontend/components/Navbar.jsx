@@ -43,11 +43,16 @@ export default function Navbar() {
         <nav className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
 
           {/* ── Logo ──────────────────────────────────── */}
+<<<<<<< HEAD
           <Link
             href="/"
             className="font-serif text-xl sm:text-2xl font-light tracking-[0.2em] sm:tracking-[0.3em] text-ink shrink-0"
           >
             MS Furniture
+=======
+          <Link href="/" className="font-serif text-2xl font-light tracking-[0.3em] text-ink shrink-0">
+            MS Furniture & Interiors
+>>>>>>> 3b3af985bc14cbf375154b1bf63cbb16630c717b
           </Link>
 
           {/* ── Desktop links (lg+) ───────────────────── */}
@@ -182,6 +187,7 @@ export default function Navbar() {
           <div className="fixed top-0 right-0 z-50 h-full w-[min(20rem,90vw)] bg-white flex flex-col shadow-2xl">
 
             {/* Drawer header */}
+<<<<<<< HEAD
             <div className="flex items-center justify-between px-5 py-4 border-b border-border shrink-0">
               <span className="font-serif text-xl tracking-[0.25em] text-ink">MS Furniture</span>
               <button
@@ -191,6 +197,11 @@ export default function Navbar() {
               >
                 <CloseIcon />
               </button>
+=======
+            <div className="flex items-center justify-between px-5 py-4 border-b border-border">
+              <span className="font-serif text-xl tracking-[0.3em] text-ink">MS Furniture & Interiors</span>
+              <button onClick={() => setMobileOpen(false)} className="text-2xl text-muted leading-none">×</button>
+>>>>>>> 3b3af985bc14cbf375154b1bf63cbb16630c717b
             </div>
 
             {/* Drawer body — scrollable */}

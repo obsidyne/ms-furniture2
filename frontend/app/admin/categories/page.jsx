@@ -113,7 +113,7 @@ function CategoryCard({ cat, onEdit, onDelete }) {
           <img
             src={cat.imageUrl.startsWith("/") ? `${API}${cat.imageUrl}` : cat.imageUrl}
             alt={cat.name}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+            className="w-full h-full object-contain p-4 group-hover:scale-105 transition-transform duration-300"
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-cream to-border">
@@ -269,7 +269,7 @@ function CategoryModal({ category, onClose, onSaved }) {
                   <img
                     src={form.imageUrl.startsWith("/") ? `${API}${form.imageUrl}` : form.imageUrl}
                     alt="Preview"
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-contain p-2"
                   />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center text-muted/40">

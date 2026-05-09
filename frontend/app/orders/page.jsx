@@ -81,7 +81,7 @@ function OrdersContent() {
                 {order.items.slice(0, 5).map((item, i) => (
                   <div key={i} className="w-12 h-12 rounded-sm bg-cream overflow-hidden shrink-0">
                     {item.product?.images?.[0]
-                      ? <img src={imgSrc(item.product.images[0])} alt="" className="w-full h-full object-cover" />
+                      ? <img src={imgSrc(item.product.images[0])} alt="" className="w-full h-full object-contain p-1" />
                       : <div className="w-full h-full bg-gradient-to-br from-cream to-border" />}
                   </div>
                 ))}

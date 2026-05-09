@@ -32,7 +32,7 @@ export default function AuthPage() {
         </div>
         <div className="relative z-10 text-center px-12">
           <span className="block font-serif text-7xl font-light tracking-[0.35em] text-cream mb-6">
-            MS Furniture
+            MS Furniture & Interiors
           </span>
           <p className="font-serif italic font-light text-xl text-accent tracking-wide leading-relaxed max-w-xs mx-auto mb-10">
             Furniture crafted for the way you live.

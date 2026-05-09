@@ -21,7 +21,7 @@ export default function AdminLoginPage() {
         {/* Logo */}
         <div className="text-center mb-10">
           <span className="block font-serif text-5xl font-light tracking-[0.35em] text-cream mb-2">
-            MS Furniture
+            MS Furniture & Interiors
           </span>
           <p className="text-[0.65rem] uppercase tracking-[0.2em] text-white/30">
             Admin Portal

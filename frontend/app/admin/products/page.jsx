@@ -111,7 +111,7 @@ export default function AdminProductsPage() {
                             <img
                               src={p.images[0].startsWith("/") ? `${API}${p.images[0]}` : p.images[0]}
                               alt={p.name}
-                              className="w-full h-full object-cover"
+                              className="w-full h-full object-contain p-1"
                             />
                           ) : (
                             <div className="w-full h-full bg-border" />
