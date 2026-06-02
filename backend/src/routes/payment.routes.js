@@ -39,7 +39,7 @@ router.post("/create-razorpay-order", async (req, res) => {
     // Update payment record with razorpayOrderId
     await prisma.payment.update({
       where: { orderId: order.id },
-      data: { providerId: rzpOrder.id },
+      data: { razorpayOrderId: rzpOrder.id },
     });
 
     return res.json({
@@ -75,7 +75,7 @@ router.post("/verify-razorpay", async (req, res) => {
 
     // Payment is authentic, update order and payment status
     const payment = await prisma.payment.findFirst({
-      where: { providerId: razorpay_order_id },
+      where: { razorpayOrderId: razorpay_order_id },
     });
 
     if (!payment) return res.status(404).json({ error: "Payment record not found" });
@@ -84,8 +84,10 @@ router.post("/verify-razorpay", async (req, res) => {
       prisma.payment.update({
         where: { id: payment.id },
         data: {
-          status: "COMPLETED",
-          transactionId: razorpay_payment_id,
+          status: "PAID",
+          razorpayPaymentId: razorpay_payment_id,
+          razorpaySignature: razorpay_signature,
+          paidAt: new Date(),
         },
       }),
       prisma.order.update({
