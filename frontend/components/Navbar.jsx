@@ -43,11 +43,15 @@ export default function Navbar() {
         <nav className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
 
           {/* ── Logo ──────────────────────────────────── */}
-          <Link
-            href="/"
-            className="font-serif text-xl sm:text-2xl font-light tracking-[0.2em] sm:tracking-[0.3em] text-ink shrink-0"
-          >
-            MS Furniture
+          <Link href="/" className="flex items-center gap-3 shrink-0 group">
+            <img 
+              src="/LOGO.jpeg" 
+              alt="MS Furniture" 
+              className="h-10 w-10 object-cover rounded-full invert brightness-110" 
+            />
+            <span className="font-serif text-xl md:text-2xl font-light tracking-[0.2em] md:tracking-[0.3em] text-ink">
+              MS Furniture
+            </span>
           </Link>
 
           {/* ── Desktop links (lg+) ───────────────────── */}
@@ -183,7 +187,14 @@ export default function Navbar() {
 
             {/* Drawer header */}
             <div className="flex items-center justify-between px-5 py-4 border-b border-border shrink-0">
-              <span className="font-serif text-xl tracking-[0.25em] text-ink">MS Furniture</span>
+              <div className="flex items-center gap-2">
+                <img 
+                  src="/LOGO.jpeg" 
+                  alt="" 
+                  className="h-8 w-8 object-cover rounded-full invert" 
+                />
+                <span className="font-serif text-lg tracking-[0.2em] text-ink uppercase">MS Furniture</span>
+              </div>
               <button
                 onClick={() => setMobileOpen(false)}
                 className="w-8 h-8 flex items-center justify-center rounded-sm text-muted hover:text-ink hover:bg-cream transition-colors"

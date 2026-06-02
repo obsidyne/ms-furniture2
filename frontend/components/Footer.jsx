@@ -6,7 +6,14 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-6 sm:px-10 py-12">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-10">
           <div className="col-span-2 md:col-span-1">
-            <p className="font-serif text-xl text-white mb-3">MS Furniture & Interiors</p>
+            <div className="flex items-center gap-3 mb-3">
+              <img 
+                src="/LOGO.jpeg" 
+                alt="" 
+                className="h-8 w-8 object-cover rounded-full border border-white/10" 
+              />
+              <p className="font-serif text-xl text-white">MS Furniture</p>
+            </div>
             <p className="text-sm leading-relaxed text-white/40 max-w-[200px]">
               Crafting furniture that becomes part of your story.
             </p>

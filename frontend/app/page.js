@@ -125,6 +125,53 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* ── Featured Products ─────────────────────────────────── */}
+      <section className="bg-[#f9f6f1] py-16 sm:py-24">
+        <div className="max-w-7xl mx-auto px-6 sm:px-10">
+          <div className="flex items-end justify-between mb-10">
+            <div>
+              <p className="text-[0.65rem] font-medium tracking-[0.2em] uppercase text-muted mb-2">
+                Handpicked
+              </p>
+              <h2 className="font-serif text-3xl sm:text-4xl font-light text-ink">
+                New Arrivals
+              </h2>
+            </div>
+            <Link
+              href="/shop"
+              className="hidden sm:flex items-center gap-2 text-sm text-muted hover:text-ink transition-colors underline-offset-4 hover:underline"
+            >
+              See all <ArrowRight size={14} />
+            </Link>
+          </div>
+
+          {loadingProducts ? (
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
+              {Array.from({ length: 4 }).map((_, i) => (
+                <div key={i} className="aspect-[3/4] rounded shimmer" />
+              ))}
+            </div>
+          ) : featured.length === 0 ? (
+            <p className="text-muted text-sm">No products found.</p>
+          ) : (
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
+              {featured.map((product) => (
+                <ProductCard key={product.id} product={product} />
+              ))}
+            </div>
+          )}
+
+          <div className="mt-10 text-center sm:hidden">
+            <Link
+              href="/shop"
+              className="inline-flex items-center gap-2 text-sm text-ink underline underline-offset-4"
+            >
+              View all products <ArrowRight size={14} />
+            </Link>
+          </div>
+        </div>
+      </section>
+
       {/* ── Categories ───────────────────────────────────────── */}
       {categories.length > 0 && (
         <section className="max-w-7xl mx-auto px-6 sm:px-10 py-16 sm:py-24">
@@ -186,53 +233,6 @@ export default function HomePage() {
           </div>
         </section>
       )}
-
-      {/* ── Featured Products ─────────────────────────────────── */}
-      <section className="bg-[#f9f6f1] py-16 sm:py-24">
-        <div className="max-w-7xl mx-auto px-6 sm:px-10">
-          <div className="flex items-end justify-between mb-10">
-            <div>
-              <p className="text-[0.65rem] font-medium tracking-[0.2em] uppercase text-muted mb-2">
-                Handpicked
-              </p>
-              <h2 className="font-serif text-3xl sm:text-4xl font-light text-ink">
-                New Arrivals
-              </h2>
-            </div>
-            <Link
-              href="/shop"
-              className="hidden sm:flex items-center gap-2 text-sm text-muted hover:text-ink transition-colors underline-offset-4 hover:underline"
-            >
-              See all <ArrowRight size={14} />
-            </Link>
-          </div>
-
-          {loadingProducts ? (
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
-              {Array.from({ length: 4 }).map((_, i) => (
-                <div key={i} className="aspect-[3/4] rounded shimmer" />
-              ))}
-            </div>
-          ) : featured.length === 0 ? (
-            <p className="text-muted text-sm">No products found.</p>
-          ) : (
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
-              {featured.map((product) => (
-                <ProductCard key={product.id} product={product} />
-              ))}
-            </div>
-          )}
-
-          <div className="mt-10 text-center sm:hidden">
-            <Link
-              href="/shop"
-              className="inline-flex items-center gap-2 text-sm text-ink underline underline-offset-4"
-            >
-              View all products <ArrowRight size={14} />
-            </Link>
-          </div>
-        </div>
-      </section>
 
       {/* ── About Us ─────────────────────────────────────────── */}
       <section id="about" className="max-w-7xl mx-auto px-6 sm:px-10 py-16 sm:py-28">

@@ -51,10 +51,17 @@ export default function AdminShell({ children }) {
       {/* Sidebar */}
       <aside className="w-56 shrink-0 bg-ink text-cream flex flex-col">
         <div className="px-6 py-5 border-b border-white/10">
-          <span className="block font-serif text-2xl font-light tracking-[0.3em] text-cream">
-            MS Furntiure
-          </span>
-          <p className="text-[0.6rem] uppercase tracking-[0.15em] text-white/30 mt-0.5">
+          <div className="flex items-center gap-3">
+            <img 
+              src="/LOGO.jpeg" 
+              alt="" 
+              className="h-7 w-7 object-cover rounded-full border border-white/10" 
+            />
+            <span className="block font-serif text-lg font-light tracking-[0.2em] text-cream">
+              MS Furniture
+            </span>
+          </div>
+          <p className="text-[0.6rem] uppercase tracking-[0.15em] text-white/30 mt-1 pl-10">
             Admin Panel
           </p>
         </div>

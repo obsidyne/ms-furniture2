@@ -31,7 +31,7 @@ function CheckoutContent() {
   // ── State ─────────────────────────────────────────────────
   const [addresses,     setAddresses]     = useState([]);
   const [selectedAddr,  setSelectedAddr]  = useState(null);
-  const [payMethod,     setPayMethod]     = useState("FAKE"); // "FAKE" | "COD"
+  const [payMethod,     setPayMethod]     = useState("RAZORPAY"); // "RAZORPAY" | "COD"
   const [step,          setStep]          = useState(1);      // 1=address, 2=payment, 3=review
   const [placing,       setPlacing]       = useState(false);
   const [error,         setError]         = useState("");
@@ -87,18 +87,59 @@ function CheckoutContent() {
     setPlacing(true);
     setError("");
     try {
-      // For fake payment — just use COD flow (marks order CONFIRMED immediately)
-      const data = await api.post("/api/orders", {
+      // 1. Create the system order
+      const { orderId } = await api.post("/api/orders", {
         addressId:     selectedAddr,
-        paymentMethod: payMethod === "FAKE" ? "COD" : "COD",
+        paymentMethod: payMethod,
       });
 
-      // Clear cart after successful order
-      await clearCart();
-      router.push(`/orders/${data.orderId}?success=true`);
+      if (payMethod === "COD") {
+        await clearCart();
+        router.push(`/orders/${orderId}?success=true`);
+        return;
+      }
+
+      // 2. Online Payment (Razorpay)
+      // First, get the Razorpay order details from our backend
+      const rzpData = await api.post("/api/payments/create-razorpay-order", { orderId });
+
+      const options = {
+        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+        amount: rzpData.amount,
+        currency: rzpData.currency,
+        name: "MS Furniture",
+        description: `Order #${orderId}`,
+        order_id: rzpData.id,
+        handler: async (response) => {
+          try {
+            // 3. Verify payment on our backend
+            await api.post("/api/payments/verify-razorpay", {
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature: response.razorpay_signature,
+            });
+            await clearCart();
+            router.push(`/orders/${orderId}?success=true`);
+          } catch (err) {
+            setError("Payment verification failed. Please contact support.");
+          }
+        },
+        prefill: {
+          name: rzpData.userName,
+          email: rzpData.userEmail,
+        },
+        theme: {
+          color: "#1a1714",
+        },
+        modal: {
+          ondismiss: () => setPlacing(false),
+        }
+      };
+
+      const rzp = new window.Razorpay(options);
+      rzp.open();
     } catch (err) {
       setError(err.message ?? "Failed to place order");
-    } finally {
       setPlacing(false);
     }
   };
@@ -291,12 +332,12 @@ function CheckoutContent() {
             {step === 2 && (
               <div className="px-5 pb-5 flex flex-col gap-3">
                 {[
-                  // {
-                  //   value: "FAKE",
-                  //   label: "Pay Online",
-                  //   desc:  "Credit / Debit Card, UPI, Netbanking",
-                  //   badge: "Simulated — no real payment",
-                  // },
+                  {
+                    value: "RAZORPAY",
+                    label: "Pay Online",
+                    desc:  "Credit / Debit Card, UPI, Netbanking",
+                    badge: "Secure Payment via Razorpay",
+                  },
                   {
                     value: "COD",
                     label: "Cash on Delivery",
@@ -320,7 +361,7 @@ function CheckoutContent() {
                       <p className="text-sm font-medium text-ink">{label}</p>
                       <p className="text-xs text-muted">{desc}</p>
                       {badge && (
-                        <span className="inline-block mt-1 text-[0.62rem] uppercase tracking-wider bg-yellow-50 text-yellow-700 border border-yellow-200 px-2 py-0.5 rounded-sm">
+                        <span className="inline-block mt-1 text-[0.62rem] uppercase tracking-wider bg-ink text-cream px-2 py-0.5 rounded-sm">
                           {badge}
                         </span>
                       )}
@@ -339,7 +380,7 @@ function CheckoutContent() {
 
             {step > 2 && (
               <div className="px-5 pb-4 text-sm text-muted">
-                {payMethod === "COD" ? "Cash on Delivery" : "Pay Online (Simulated)"}
+                {payMethod === "COD" ? "Cash on Delivery" : "Pay Online (Razorpay)"}
               </div>
             )}
           </section>
