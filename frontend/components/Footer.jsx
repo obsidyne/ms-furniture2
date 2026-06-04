@@ -9,7 +9,7 @@ export default function Footer() {
             <div className="flex items-center gap-3 mb-3">
               <img 
                 src="/LOGO.jpeg" 
-                alt="" 
+                alt="MS Furniture & Interiors" 
                 className="h-8 w-8 object-cover rounded-full border border-white/10" 
               />
               <p className="font-serif text-xl text-white">MS Furniture</p>
