@@ -70,9 +70,23 @@ export default function Footer() {
               VHPH+RQ9, Curzon Rd, Kallupalam, Thangassery, Kollam, Kerala 691013 | Ph: 99953 22809
             </p>
           </div>
-          <p className="text-xs text-white/30">
-            Handcrafted in Kerala, India 🇮🇳
-          </p>
+          <div className="flex flex-col sm:flex-row items-center gap-4 text-center sm:text-right">
+            <p className="text-xs text-white/30">
+              Handcrafted in Kerala, India 🇮🇳
+            </p>
+            <p className="hidden sm:block text-white/10 text-xs">|</p>
+            <p className="text-xs text-white/30">
+              Designed and developed by{" "}
+              <a 
+                href="https://www.obsidyne.com" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="hover:text-white underline underline-offset-4 transition-colors"
+              >
+                Obsidyne
+              </a>
+            </p>
+          </div>
         </div>
       </div>
     </footer>
