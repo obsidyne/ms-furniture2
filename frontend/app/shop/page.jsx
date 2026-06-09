@@ -54,7 +54,9 @@ function ShopPage() {
       if (currentSearch)   params.set("search",   currentSearch);
       params.set("page",  String(currentPage));
       params.set("limit", "12");
-      const data = await api.get(`/api/products?${params}`);
+      const res  = await fetch(`${API}/api/products?${params}`);
+      if (!res.ok) throw new Error(`Request failed: ${res.status}`);
+      const data = await res.json();
       setProducts(data.data);
       setMeta(data.meta);
     } catch (err) {
