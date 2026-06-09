@@ -36,6 +36,7 @@ function ShopPage() {
   const [categories,  setCategories]  = useState([]);
   const [meta,        setMeta]        = useState({});
   const [loading,     setLoading]     = useState(true);
+  const [fetchError,  setFetchError]  = useState(false);
   const [filterOpen,  setFilterOpen]  = useState(false);
 
   const currentCategory = searchParams.get("category") || "";
@@ -45,6 +46,7 @@ function ShopPage() {
 
   const fetchProducts = useCallback(async () => {
     setLoading(true);
+    setFetchError(false);
     try {
       const params = new URLSearchParams();
       if (currentCategory) params.set("category", currentCategory);
@@ -57,6 +59,7 @@ function ShopPage() {
       setMeta(data.meta);
     } catch (err) {
       console.error(err);
+      setFetchError(true);
     } finally {
       setLoading(false);
     }
@@ -167,6 +170,17 @@ function ShopPage() {
                 {Array.from({ length: 12 }).map((_, i) => (
                   <div key={i} className="aspect-[3/4] rounded shimmer" />
                 ))}
+              </div>
+            ) : fetchError ? (
+              <div className="flex flex-col items-center justify-center py-24 text-center gap-3">
+                <p className="font-serif text-2xl font-light text-muted">Could not load products</p>
+                <p className="text-sm text-muted">Check your connection and try again.</p>
+                <button
+                  onClick={fetchProducts}
+                  className="text-sm text-ink underline underline-offset-2 hover:text-muted"
+                >
+                  Retry
+                </button>
               </div>
             ) : products.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-24 text-center gap-3">

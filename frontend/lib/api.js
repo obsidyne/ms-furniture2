@@ -9,8 +9,13 @@ async function request(path, options = {}) {
   };
 
   if (auth.currentUser) {
-    const token = await auth.currentUser.getIdToken();
-    headers["Authorization"] = `Bearer ${token}`;
+    try {
+      const token = await auth.currentUser.getIdToken();
+      headers["Authorization"] = `Bearer ${token}`;
+    } catch {
+      // Token refresh failed — proceed without auth.
+      // Public endpoints still work; protected ones will return 401.
+    }
   }
 
   const res = await fetch(`${BASE_URL}${path}`, { ...options, headers });
