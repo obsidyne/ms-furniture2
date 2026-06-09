@@ -36,7 +36,7 @@ function ShopPage() {
   const [categories,  setCategories]  = useState([]);
   const [meta,        setMeta]        = useState({});
   const [loading,     setLoading]     = useState(true);
-  const [fetchError,  setFetchError]  = useState(false);
+  const [fetchError,  setFetchError]  = useState(null);
   const [filterOpen,  setFilterOpen]  = useState(false);
 
   const currentCategory = searchParams.get("category") || "";
@@ -59,7 +59,7 @@ function ShopPage() {
       setMeta(data.meta);
     } catch (err) {
       console.error(err);
-      setFetchError(true);
+      setFetchError(err.message);
     } finally {
       setLoading(false);
     }
@@ -174,7 +174,7 @@ function ShopPage() {
             ) : fetchError ? (
               <div className="flex flex-col items-center justify-center py-24 text-center gap-3">
                 <p className="font-serif text-2xl font-light text-muted">Could not load products</p>
-                <p className="text-sm text-muted">Check your connection and try again.</p>
+                <p className="text-sm text-muted font-mono">{fetchError}</p>
                 <button
                   onClick={fetchProducts}
                   className="text-sm text-ink underline underline-offset-2 hover:text-muted"
